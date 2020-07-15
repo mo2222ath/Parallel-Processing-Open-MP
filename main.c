@@ -4,16 +4,16 @@
 
 
 int **allocate2dMatrix(int r, int c) {
-    int *l, **m;
+    int *linear, **mat;
     int i;
 
-     l = (int*)malloc(sizeof(int) * r * c);
-     m = (int**)malloc(sizeof(int*) * r);
+     linear = (int*)malloc(sizeof(int) * r * c);
+     mat = (int**)malloc(sizeof(int*) * r);
      for ( i = 0; i < r; i++)
      {
-         m[i] = &l[i * c];
+         mat[i] = &linear[i * c];
      }
-     return m;
+     return mat;
 }
 
 void print2DMatrix(int** arr, int row, int column) {
@@ -24,25 +24,26 @@ void print2DMatrix(int** arr, int row, int column) {
         {
             printf("%d", arr[n][m]);
             printf("  ");
-
+            
         }
         printf("\n");
     }
 }
 
-void initialaizMatrix(int** a , int r , int c) {
+void initialaizMatrix(int** arr , int r , int c) {
     int l, m;
     for (l = 0; l < r; l++)
     {
         for (m = 0; m< c; m++)
         {
-            a[l][m] = 0;
+            arr[l][m] = 0;
         }
     }
 }
 
 int main(int argc, char *argv[])
 {
+    int myrank, numThreads; 
     int i, j;
     int **a,  **b , **c;
     int column, row;
@@ -52,7 +53,7 @@ int main(int argc, char *argv[])
     printf("Please enter dimensions of the matrix: ");
     scanf("%d %d", &row, &column);
 
-    a = allocate2dMatrix(row , column);
+    firstMatrix = allocat2dMatrix(row , column);
     printf("Please enter its elements: \n");
     for (i = 0; i < row; i++)
     {
@@ -61,8 +62,8 @@ int main(int argc, char *argv[])
             scanf("%d", &a[i][j]);
         }
     }
-
-    b = allocate2dMatrix(row , column);
+    
+    secondMatrix = allocate2dMatrix(row_2 , column_2);
     printf("Please enter its elements: \n");
     for (i = 0; i < row; i++)
     {
@@ -71,29 +72,26 @@ int main(int argc, char *argv[])
             scanf("%d", &b[i][j]);
         }
     }
-
-    c = allocate2dMatrix(row , column);
+    
+    resultMatrix = allocate2dMatrix(row , column);
     initialaizMatrix(c , row, column);
 
 
-    #pragma omp parallel shared(a,b,c) private(i,j)
+    #pragma omp parallel shared(a,b,c)
     {
-        //#pragma omp for schedule(dynamic , 2)
         #pragma omp for schedule(static)
         for (i = 0; i < row; i++)
         {
-            for (j = 0; j < column; j++)
+            for (j = 0; j < column + rows; j++)
             {
                 c[i][j] = a[i][j] + b[i][j];
-                printf ("IN thread %d  C[%d][%d] = %d \n" , omp_get_thread_num() , i, j ,c[i][j] );
-            }
-
+            } 
         }
 
     }   /* end of parallel region */
 
 
     printf("Matrix Addition is : \n");
-    print2DMatrix(c, row, column);
+    print_Matrix(c, row, column);
 
 }
