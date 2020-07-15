@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1588197010 source:c:\users\moaaz\documents\c++\a3_20170411\main.c
+	<omp.h>
+	<stdio.h>
+	<stdlib.h>
+
